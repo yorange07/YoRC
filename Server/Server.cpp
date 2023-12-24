@@ -13,7 +13,7 @@ void Server::initDatabaseConnection() {
 
     mysql_init(&conn);
 
-    // Добавьте опцию MYSQL_OPT_SSL_MODE и установите значение SSL_MODE_DISABLED
+    // Г„Г®ГЎГ ГўГјГІГҐ Г®ГЇГ¶ГЁГѕ MYSQL_OPT_SSL_MODE ГЁ ГіГ±ГІГ Г­Г®ГўГЁГІГҐ Г§Г­Г Г·ГҐГ­ГЁГҐ SSL_MODE_DISABLED
     const int ssl_mode = SSL_MODE_DISABLED;
     mysql_options(&conn, MYSQL_OPT_SSL_MODE, &ssl_mode);
 
@@ -43,7 +43,7 @@ void Server::stop() {
     stopServer = true;
     closesocket(serverSocket);
 
-    // Закрываем все клиентские сокеты
+    // Г‡Г ГЄГ°Г»ГўГ ГҐГ¬ ГўГ±ГҐ ГЄГ«ГЁГҐГ­ГІГ±ГЄГЁГҐ Г±Г®ГЄГҐГІГ»
     for (int clientSocket : clientSockets) {
         closesocket(clientSocket);
     }
@@ -67,7 +67,7 @@ std::string Server::receiveMessageFromClient(int clientSocket) {
         return std::string(buffer, bytesRead);
     }
     else {
-        // В случае ошибки или если соединение закрыто, возвращаем пустую строку
+        // Г‚ Г±Г«ГіГ·Г ГҐ Г®ГёГЁГЎГЄГЁ ГЁГ«ГЁ ГҐГ±Г«ГЁ Г±Г®ГҐГ¤ГЁГ­ГҐГ­ГЁГҐ Г§Г ГЄГ°Г»ГІГ®, ГўГ®Г§ГўГ°Г Г№Г ГҐГ¬ ГЇГіГ±ГІГіГѕ Г±ГІГ°Г®ГЄГі
         return std::string();
     }
 }
@@ -130,12 +130,12 @@ void Server::waitForClient() {
 
     std::cout << "Client connected!" << std::endl;
 
-    // Создаем новый поток для обработки клиента
+    // Г‘Г®Г§Г¤Г ГҐГ¬ Г­Г®ГўГ»Г© ГЇГ®ГІГ®ГЄ Г¤Г«Гї Г®ГЎГ°Г ГЎГ®ГІГЄГЁ ГЄГ«ГЁГҐГ­ГІГ 
     std::thread clientThread([this, clientSocket]() {
         handleClient(clientSocket);
         });
 
-    // Отсоединяем поток, чтобы он мог выполняться независимо
+    // ГЋГІГ±Г®ГҐГ¤ГЁГ­ГїГҐГ¬ ГЇГ®ГІГ®ГЄ, Г·ГІГ®ГЎГ» Г®Г­ Г¬Г®ГЈ ГўГ»ГЇГ®Г«Г­ГїГІГјГ±Гї Г­ГҐГ§Г ГўГЁГ±ГЁГ¬Г®
     clientThread.detach();
 }
 
@@ -143,36 +143,36 @@ void Server::handleClient(int clientSocket) {
     while (true) {
         std::string receivedMessage = receiveMessageFromClient(clientSocket);
 
-        // Проверяем, было ли соединение закрыто или произошла ошибка
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, ГЎГ»Г«Г® Г«ГЁ Г±Г®ГҐГ¤ГЁГ­ГҐГ­ГЁГҐ Г§Г ГЄГ°Г»ГІГ® ГЁГ«ГЁ ГЇГ°Г®ГЁГ§Г®ГёГ«Г  Г®ГёГЁГЎГЄГ 
         if (receivedMessage.empty()) {
             std::cout << "Client disconnected or error occurred." << std::endl;
             break;
         }
 
-        // Обработка сообщения в зависимости от его типа
+        // ГЋГЎГ°Г ГЎГ®ГІГЄГ  Г±Г®Г®ГЎГ№ГҐГ­ГЁГї Гў Г§Г ГўГЁГ±ГЁГ¬Г®Г±ГІГЁ Г®ГІ ГҐГЈГ® ГІГЁГЇГ 
         processClientMessage(clientSocket, receivedMessage);
     }
 
-    // Закрытие клиентского сокета
+    // Г‡Г ГЄГ°Г»ГІГЁГҐ ГЄГ«ГЁГҐГ­ГІГ±ГЄГ®ГЈГ® Г±Г®ГЄГҐГІГ 
     closesocket(clientSocket);
 }
 
 void Server::processClientMessage(int clientSocket, const std::string& message) {
 
-    // Извлекаем тип сообщения до первого разделителя
+    // Г€Г§ГўГ«ГҐГЄГ ГҐГ¬ ГІГЁГЇ Г±Г®Г®ГЎГ№ГҐГ­ГЁГї Г¤Г® ГЇГҐГ°ГўГ®ГЈГ® Г°Г Г§Г¤ГҐГ«ГЁГІГҐГ«Гї
     size_t delimiterPos = message.find('|');
     if (delimiterPos == std::string::npos) {
-        // Некорректное сообщение, разделитель не найден
+        // ГЌГҐГЄГ®Г°Г°ГҐГЄГІГ­Г®ГҐ Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ, Г°Г Г§Г¤ГҐГ«ГЁГІГҐГ«Гј Г­ГҐ Г­Г Г©Г¤ГҐГ­
         std::cerr << "Error: Invalid message format." << std::endl;
         return;
     }
 
     std::string receivedType = message.substr(0, delimiterPos);
 
-    // Остальные данные после разделителя
+    // ГЋГ±ГІГ Г«ГјГ­Г»ГҐ Г¤Г Г­Г­Г»ГҐ ГЇГ®Г±Г«ГҐ Г°Г Г§Г¤ГҐГ«ГЁГІГҐГ«Гї
     std::string dataAfterDelimiter = message.substr(delimiterPos + 1);
 
-    // В зависимости от типа сообщения вызываем соответствующую функцию
+    // Г‚ Г§Г ГўГЁГ±ГЁГ¬Г®Г±ГІГЁ Г®ГІ ГІГЁГЇГ  Г±Г®Г®ГЎГ№ГҐГ­ГЁГї ГўГ»Г§Г»ГўГ ГҐГ¬ Г±Г®Г®ГІГўГҐГІГ±ГІГўГіГѕГ№ГіГѕ ГґГіГ­ГЄГ¶ГЁГѕ
     if (receivedType == "1") {
         loginClient(clientSocket, dataAfterDelimiter);
     }
@@ -219,7 +219,7 @@ void Server::loginClient(int clientSocket, const std::string& data) {
     std::string password = parts[1];
     std::string loginFlag;
 
-    // Обновлённый SQL-запрос для получения user_id и user_name
+    // ГЋГЎГ­Г®ГўГ«ВёГ­Г­Г»Г© SQL-Г§Г ГЇГ°Г®Г± Г¤Г«Гї ГЇГ®Г«ГіГ·ГҐГ­ГЁГї user_id ГЁ user_name
     std::string query = "SELECT User_reg.User_id, User_data.User_name "
                         "FROM User_reg INNER JOIN User_data ON User_reg.User_id = User_data.User_id "
                         "WHERE User_reg.User_login = '" + login + "' AND User_reg.User_password = '" + password + "'";
@@ -239,14 +239,14 @@ void Server::loginClient(int clientSocket, const std::string& data) {
         return;
     }
 
-    // Переменные для хранения найденных значений
+    // ГЏГҐГ°ГҐГ¬ГҐГ­Г­Г»ГҐ Г¤Г«Гї ГµГ°Г Г­ГҐГ­ГЁГї Г­Г Г©Г¤ГҐГ­Г­Г»Гµ Г§Г­Г Г·ГҐГ­ГЁГ©
     int id = -1;
     std::string name;
 
     if (mysql_num_rows(result) > 0) {
         MYSQL_ROW row = mysql_fetch_row(result);
-        id = std::stoi(row[0]); // Преобразование user_id в int
-        name = row[1]; // user_name уже в формате std::string
+        id = std::stoi(row[0]); // ГЏГ°ГҐГ®ГЎГ°Г Г§Г®ГўГ Г­ГЁГҐ user_id Гў int
+        name = row[1]; // user_name ГіГ¦ГҐ Гў ГґГ®Г°Г¬Г ГІГҐ std::string
         loginFlag = name;
         Message loginMessageToClient(RIGHT_LOG_CODE, { loginFlag });
         sendMessageToClient(clientSocket, loginMessageToClient);
@@ -294,30 +294,30 @@ void Server::regClient(int clientSocket, const std::string& data) {
     std::string password = parts[1];
     std::string name = parts[2];
 
-    // Подготовка и выполнение SQL-запроса для User_reg
+    // ГЏГ®Г¤ГЈГ®ГІГ®ГўГЄГ  ГЁ ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГҐ SQL-Г§Г ГЇГ°Г®Г±Г  Г¤Г«Гї User_reg
     std::string queryUserReg = "INSERT INTO User_reg (User_login, User_password) VALUES ('" + login + "', '" + password + "')";
     if (mysql_query(&conn, queryUserReg.c_str())) {
         std::cerr << "Query Execution Error: " << mysql_error(&conn) << std::endl;
-        // Обработка ошибок...
+        // ГЋГЎГ°Г ГЎГ®ГІГЄГ  Г®ГёГЁГЎГ®ГЄ...
         Message signUpMessageToClient(BAD_REG_CODE, { "Query Execution Error" });
         sendMessageToClient(clientSocket, signUpMessageToClient);
         return;
     }
 
-    // Получение ID вставленного пользователя
+    // ГЏГ®Г«ГіГ·ГҐГ­ГЁГҐ ID ГўГ±ГІГ ГўГ«ГҐГ­Г­Г®ГЈГ® ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї
     int user_id = static_cast<int>(mysql_insert_id(&conn));
 
-    // Подготовка и выполнение SQL-запроса для User_data
+    // ГЏГ®Г¤ГЈГ®ГІГ®ГўГЄГ  ГЁ ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГҐ SQL-Г§Г ГЇГ°Г®Г±Г  Г¤Г«Гї User_data
     std::string queryUserData = "INSERT INTO User_data (User_id, User_name) VALUES (" + std::to_string(user_id) + ", '" + name + "')";
     if (mysql_query(&conn, queryUserData.c_str())) {
         std::cerr << "Query Execution Error: " << mysql_error(&conn) << std::endl;
-        // Обработка ошибок...
+        // ГЋГЎГ°Г ГЎГ®ГІГЄГ  Г®ГёГЁГЎГ®ГЄ...
         Message signUpMessageToClient(BAD_REG_CODE, { "Query Execution Error" });
         sendMessageToClient(clientSocket, signUpMessageToClient);
         return;
     }
 
-    //В случае успешной регистрации - в вектор клиентов текущей сессии добавляется новый
+    //Г‚ Г±Г«ГіГ·Г ГҐ ГіГ±ГЇГҐГёГ­Г®Г© Г°ГҐГЈГЁГ±ГІГ°Г Г¶ГЁГЁ - Гў ГўГҐГЄГІГ®Г° ГЄГ«ГЁГҐГ­ГІГ®Гў ГІГҐГЄГіГ№ГҐГ© Г±ГҐГ±Г±ГЁГЁ Г¤Г®ГЎГ ГўГ«ГїГҐГІГ±Гї Г­Г®ГўГ»Г©
     _userList.push_back(User(user_id, login, name, password, clientSocket));
 
     Message signUpMessageToClient(RIGHT_REG_CODE, { name });
@@ -343,10 +343,10 @@ void Server::addMessage(int clientSocket, const std::string& data) {
     std::string address = parts[0];
     std::string text = parts[1];
 
-    // Получение sender_id
+    // ГЏГ®Г«ГіГ·ГҐГ­ГЁГҐ sender_id
     int sender_id = getUserIdBySocket(clientSocket);
 
-    // Поиск address_id
+    // ГЏГ®ГЁГ±ГЄ address_id
     std::string query = "SELECT User_id FROM User_data WHERE User_name = '" + address + "'";
     if (mysql_query(&conn, query.c_str())) {
         std::cerr << "Query Execution Error: " << mysql_error(&conn) << std::endl;
@@ -370,20 +370,20 @@ void Server::addMessage(int clientSocket, const std::string& data) {
     mysql_free_result(result);
 
     if (address_id == -1) {
-        //Послать клиенту сигнал о несуществовании адресата
+        //ГЏГ®Г±Г«Г ГІГј ГЄГ«ГЁГҐГ­ГІГі Г±ГЁГЈГ­Г Г« Г® Г­ГҐГ±ГіГ№ГҐГ±ГІГўГ®ГўГ Г­ГЁГЁ Г Г¤Г°ГҐГ±Г ГІГ 
         Message SignalMessageToClient(SIGNAL_REQUEST, { "Address not found" });
         sendMessageToClient(clientSocket, SignalMessageToClient);
         return;
     }
 
-    // Формирование и выполнение SQL-запроса для добавления сообщения
+    // Г”Г®Г°Г¬ГЁГ°Г®ГўГ Г­ГЁГҐ ГЁ ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГҐ SQL-Г§Г ГЇГ°Г®Г±Г  Г¤Г«Гї Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГї Г±Г®Г®ГЎГ№ГҐГ­ГЁГї
     std::string insertQuery = "INSERT INTO Message (Sender_id, Address_id, Message_text, Message_date) VALUES ("
         + std::to_string(sender_id) + ", " + std::to_string(address_id) + ", '"
         + text + "', NOW())";
 
-    //Послать адресату сообщение
-    //1. Извлечь сокет адресата по id
-    //2. Если сокет существует, то создать и послать сообщение на сокет
+    //ГЏГ®Г±Г«Г ГІГј Г Г¤Г°ГҐГ±Г ГІГі Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ
+    //1. Г€Г§ГўГ«ГҐГ·Гј Г±Г®ГЄГҐГІ Г Г¤Г°ГҐГ±Г ГІГ  ГЇГ® id
+    //2. Г…Г±Г«ГЁ Г±Г®ГЄГҐГІ Г±ГіГ№ГҐГ±ГІГўГіГҐГІ, ГІГ® Г±Г®Г§Г¤Г ГІГј ГЁ ГЇГ®Г±Г«Г ГІГј Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ Г­Г  Г±Г®ГЄГҐГІ
     int addressSocket = getUserSocketById(address_id);
     if (addressSocket != -1) {
         std::string senderName = getUserNameById(sender_id);
@@ -433,14 +433,14 @@ void Server::showUsers(int clientSocket, const std::string& data) {
         }
         mysql_free_result(result);
 
-        //Отправить list клиенту
+        //ГЋГІГЇГ°Г ГўГЁГІГј list ГЄГ«ГЁГҐГ­ГІГі
         Message showUsers(SHOW_USERS_LIST_REQUEST, { list });
         sendMessageToClient(clientSocket, showUsers);
 
     }
     else if (flag == "online") {
-        //Извлечь имена пользователей из вектора пользователей текущего сеанса и записать в list
-        //Отправить list клиенту
+        //Г€Г§ГўГ«ГҐГ·Гј ГЁГ¬ГҐГ­Г  ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ© ГЁГ§ ГўГҐГЄГІГ®Г°Г  ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ© ГІГҐГЄГіГ№ГҐГЈГ® Г±ГҐГ Г­Г±Г  ГЁ Г§Г ГЇГЁГ±Г ГІГј Гў list
+        //ГЋГІГЇГ°Г ГўГЁГІГј list ГЄГ«ГЁГҐГ­ГІГі
         for (auto& user : _userList) {
             list += user.getUserName() + delimiter;
         }
@@ -463,7 +463,7 @@ void Server::showHistory(int clientSocket, const std::string& data) {
 
     int senderId = getUserIdBySocket(clientSocket);
 
-    // Получение addressId
+    // ГЏГ®Г«ГіГ·ГҐГ­ГЁГҐ addressId
     std::string query = "SELECT User_id FROM User_data WHERE User_name = '" + addressName + "'";
     if (mysql_query(&conn, query.c_str())) {
         std::cerr << "Query Execution Error: " << mysql_error(&conn) << std::endl;
@@ -486,7 +486,7 @@ void Server::showHistory(int clientSocket, const std::string& data) {
     int addressId = std::stoi(row[0]);
     mysql_free_result(result);
 
-    // Получение истории сообщений
+    // ГЏГ®Г«ГіГ·ГҐГ­ГЁГҐ ГЁГ±ГІГ®Г°ГЁГЁ Г±Г®Г®ГЎГ№ГҐГ­ГЁГ©
     query = "SELECT Message_text, Message_date FROM Message WHERE (Sender_id = "
         + std::to_string(senderId) + " AND Address_id = " + std::to_string(addressId)
         + ") OR (Sender_id = " + std::to_string(addressId) + " AND Address_id = "
@@ -508,7 +508,7 @@ void Server::showHistory(int clientSocket, const std::string& data) {
         if (!list.empty()) {
             list += delimiter;
         }
-        list += std::string(row[0]) + " " + row[1]; // Message_text и Message_date
+        list += std::string(row[0]) + " " + row[1]; // Message_text ГЁ Message_date
     }
     mysql_free_result(result);
 
