@@ -10,11 +10,11 @@ Client::~Client() {
 }
 
 void Client::startClient() {
-    connectToServer("127.0.0.1", 12345);//Подключение к серверу с чатом
+    connectToServer("127.0.0.1", 12345);//ГЏГ®Г¤ГЄГ«ГѕГ·ГҐГ­ГЁГҐ ГЄ Г±ГҐГ°ГўГҐГ°Гі Г± Г·Г ГІГ®Г¬
     std::cout << "!!!";
     std::cout << _chatActivation;
     if (_chatActivation == true)
-        showLoginMenu();//Чат приветствует и показывает меню входа/регистрации
+        showLoginMenu();//Г—Г ГІ ГЇГ°ГЁГўГҐГІГ±ГІГўГіГҐГІ ГЁ ГЇГ®ГЄГ Г§Г»ГўГ ГҐГІ Г¬ГҐГ­Гѕ ГўГµГ®Г¤Г /Г°ГҐГЈГЁГ±ГІГ°Г Г¶ГЁГЁ
     else std::cout << "Failed to connect to server";
 }
 
@@ -47,7 +47,7 @@ void Client::connectToServer(const std::string& ipAddress, int port) {
 
     setChatActivation(true);
 
-    // Запускаем цикл получения сообщений в отдельном потоке
+    // Г‡Г ГЇГіГ±ГЄГ ГҐГ¬ Г¶ГЁГЄГ« ГЇГ®Г«ГіГ·ГҐГ­ГЁГї Г±Г®Г®ГЎГ№ГҐГ­ГЁГ© Гў Г®ГІГ¤ГҐГ«ГјГ­Г®Г¬ ГЇГ®ГІГ®ГЄГҐ
     std::thread(&Client::receiveLoop, this).detach();
 }
 
@@ -151,13 +151,13 @@ void Client::signUp()
         registerCondition.wait(lock, [this] { return regAttemptCompleted; });
 
         if (registerSuccess) {
-            // Регистрация успешна
+            // ГђГҐГЈГЁГ±ГІГ°Г Г¶ГЁГї ГіГ±ГЇГҐГёГ­Г 
             std::cout << "Registration successful!" << std::endl;
             User currenetUser(1, login, password, name, clientSocket);
             _currentUser = std::make_shared<User>(currenetUser);
         }
         else {
-            // Ошибка регистрации
+            // ГЋГёГЁГЎГЄГ  Г°ГҐГЈГЁГ±ГІГ°Г Г¶ГЁГЁ
             std::cout << "Registration failed." << std::endl;
         }
         if (_currentUser == nullptr)
@@ -194,18 +194,18 @@ void Client::login()
         Message loginMessage(LOGIN_REQUEST, { login,password});
         sendMessage(loginMessage);
 
-        // Ожидание ответа
+        // ГЋГ¦ГЁГ¤Г Г­ГЁГҐ Г®ГІГўГҐГІГ 
         std::unique_lock<std::mutex> lock(loginMutex);
         loginCondition.wait(lock, [this] { return loginAttemptCompleted; });
         
 
         if (loginSuccess == true) {
-            // Вход успешен
+            // Г‚ГµГ®Г¤ ГіГ±ГЇГҐГёГҐГ­
             User currenetUser(1, login, password, Me, clientSocket);
             _currentUser = std::make_shared<User>(currenetUser);
         }
         else {
-            // Ошибка входа
+            // ГЋГёГЁГЎГЄГ  ГўГµГ®Г¤Г 
             std::cout << "Login error:";
         }
 
@@ -252,18 +252,18 @@ void Client::showChat() {
     Message _message(SHOW_MESSAGE_HISTORY_REQUEST, { name });
     sendMessage(_message);
 
-    // Ожидание ответа
+    // ГЋГ¦ГЁГ¤Г Г­ГЁГҐ Г®ГІГўГҐГІГ 
     std::unique_lock<std::mutex> lock(otherMessageMutex);
     otherMessageCondition.wait(lock, [this] { return otherAttemptCompleted; });
 
     if (otherMessageSuccess == true) {
-        // Запрос удовлетворен и мы сбрасываем флаг 
+        // Г‡Г ГЇГ°Г®Г± ГіГ¤Г®ГўГ«ГҐГІГўГ®Г°ГҐГ­ ГЁ Г¬Г» Г±ГЎГ°Г Г±Г»ГўГ ГҐГ¬ ГґГ«Г ГЈ 
         otherMessageSuccess = false;
         otherAttemptCompleted = false;
 
     }
     else {
-        // Запрос не удовлетворен
+        // Г‡Г ГЇГ°Г®Г± Г­ГҐ ГіГ¤Г®ГўГ«ГҐГІГўГ®Г°ГҐГ­
         std::cout << "Request error" << std::endl;
     }
     lock.unlock();
@@ -274,18 +274,18 @@ void Client::showAllUsersList() {
     Message _message(SHOW_USERS_LIST_REQUEST, { "all"});
     sendMessage(_message);
 
-    // Ожидание ответа
+    // ГЋГ¦ГЁГ¤Г Г­ГЁГҐ Г®ГІГўГҐГІГ 
     std::unique_lock<std::mutex> lock(otherMessageMutex);
     otherMessageCondition.wait(lock, [this] { return otherAttemptCompleted; });
 
     if (otherMessageSuccess == true) {
-        // Запрос удовлетворен и мы сбрасываем флаг 
+        // Г‡Г ГЇГ°Г®Г± ГіГ¤Г®ГўГ«ГҐГІГўГ®Г°ГҐГ­ ГЁ Г¬Г» Г±ГЎГ°Г Г±Г»ГўГ ГҐГ¬ ГґГ«Г ГЈ 
         otherMessageSuccess = false;
         otherAttemptCompleted = false;
 
     }
     else {
-        // Запрос не удовлетворен
+        // Г‡Г ГЇГ°Г®Г± Г­ГҐ ГіГ¤Г®ГўГ«ГҐГІГўГ®Г°ГҐГ­
         std::cout << "Request error" << std::endl;
     }
     lock.unlock();
@@ -296,17 +296,17 @@ void Client::showOnlineUsersList() {
     Message _message(SHOW_USERS_LIST_REQUEST, { "online" });
     sendMessage(_message);
 
-    // Ожидание ответа
+    // ГЋГ¦ГЁГ¤Г Г­ГЁГҐ Г®ГІГўГҐГІГ 
     std::unique_lock<std::mutex> lock(otherMessageMutex);
     otherMessageCondition.wait(lock, [this] { return otherMessageSuccess; });
 
     if (otherMessageSuccess == true) {
-        // Запрос удовлетворен и мы сбрасываем флаг 
+        // Г‡Г ГЇГ°Г®Г± ГіГ¤Г®ГўГ«ГҐГІГўГ®Г°ГҐГ­ ГЁ Г¬Г» Г±ГЎГ°Г Г±Г»ГўГ ГҐГ¬ ГґГ«Г ГЈ 
         otherMessageSuccess = false;
         otherMessageSuccess = false;
     }
     else {
-        // Запрос не удовлетворен
+        // Г‡Г ГЇГ°Г®Г± Г­ГҐ ГіГ¤Г®ГўГ«ГҐГІГўГ®Г°ГҐГ­
         std::cout << "Request error" << std::endl;
     }
 
@@ -342,7 +342,7 @@ std::string Client::receiveMessage() {
     int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
 
     if (bytesRead <= 0) {
-        // Обработка отключения сервера
+        // ГЋГЎГ°Г ГЎГ®ГІГЄГ  Г®ГІГЄГ«ГѕГ·ГҐГ­ГЁГї Г±ГҐГ°ГўГҐГ°Г 
         disconnect();
         return "";
     }
@@ -352,32 +352,32 @@ std::string Client::receiveMessage() {
 
 void Client::receiveLoop() {
     while (true) {
-        // Реализуйте цикл получения сообщений от сервера
+        // ГђГҐГ Г«ГЁГ§ГіГ©ГІГҐ Г¶ГЁГЄГ« ГЇГ®Г«ГіГ·ГҐГ­ГЁГї Г±Г®Г®ГЎГ№ГҐГ­ГЁГ© Г®ГІ Г±ГҐГ°ГўГҐГ°Г 
         std::string receivedMessage = receiveMessage();
         if (receivedMessage.empty()) {
-            break;  // Если сервер отключен, завершаем цикл
+            break;  // Г…Г±Г«ГЁ Г±ГҐГ°ГўГҐГ° Г®ГІГЄГ«ГѕГ·ГҐГ­, Г§Г ГўГҐГ°ГёГ ГҐГ¬ Г¶ГЁГЄГ«
         }
 
-        // Обработка полученного сообщения
+        // ГЋГЎГ°Г ГЎГ®ГІГЄГ  ГЇГ®Г«ГіГ·ГҐГ­Г­Г®ГЈГ® Г±Г®Г®ГЎГ№ГҐГ­ГЁГї
         processServerMessage(receivedMessage);
     }
 }
 
 void Client::processServerMessage(std::string receivedMessage) {
-    // Извлекаем тип сообщения до первого разделителя
+    // Г€Г§ГўГ«ГҐГЄГ ГҐГ¬ ГІГЁГЇ Г±Г®Г®ГЎГ№ГҐГ­ГЁГї Г¤Г® ГЇГҐГ°ГўГ®ГЈГ® Г°Г Г§Г¤ГҐГ«ГЁГІГҐГ«Гї
     size_t delimiterPos = receivedMessage.find('|');
     if (delimiterPos == std::string::npos) {
-        // Некорректное сообщение, разделитель не найден
+        // ГЌГҐГЄГ®Г°Г°ГҐГЄГІГ­Г®ГҐ Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ, Г°Г Г§Г¤ГҐГ«ГЁГІГҐГ«Гј Г­ГҐ Г­Г Г©Г¤ГҐГ­
         std::cerr << "Error: Invalid message format." << std::endl;
         return;
     }
 
     std::string receivedType = receivedMessage.substr(0, delimiterPos);
 
-    // Остальные данные после разделителя
+    // ГЋГ±ГІГ Г«ГјГ­Г»ГҐ Г¤Г Г­Г­Г»ГҐ ГЇГ®Г±Г«ГҐ Г°Г Г§Г¤ГҐГ«ГЁГІГҐГ«Гї
     std::string dataAfterDelimiter = receivedMessage.substr(delimiterPos + 1);
 
-    // В зависимости от типа сообщения вызываем соответствующую функцию
+    // Г‚ Г§Г ГўГЁГ±ГЁГ¬Г®Г±ГІГЁ Г®ГІ ГІГЁГЇГ  Г±Г®Г®ГЎГ№ГҐГ­ГЁГї ГўГ»Г§Г»ГўГ ГҐГ¬ Г±Г®Г®ГІГўГҐГІГ±ГІГўГіГѕГ№ГіГѕ ГґГіГ­ГЄГ¶ГЁГѕ
 
         if (receivedType == "001") {
             std::lock_guard<std::mutex> lock(registerMutex);
