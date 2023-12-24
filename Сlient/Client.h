@@ -16,11 +16,11 @@
 class Client {
 public:
 
-    std::string LOGIN_REQUEST = "1";//Поля: логин|пароль
-    std::string REGISTRATION_REQUEST = "2";//Поля: логин|пароль|имя
-    std::string JUST_MESSAGE_REQUEST = "3";//Поля: кому|текст
-    std::string SHOW_USERS_LIST_REQUEST = "4";//Поля: all/online|
-    std::string SHOW_MESSAGE_HISTORY_REQUEST = "5";//Поля: с кем история|
+    std::string LOGIN_REQUEST = "1";//ГЏГ®Г«Гї: Г«Г®ГЈГЁГ­|ГЇГ Г°Г®Г«Гј
+    std::string REGISTRATION_REQUEST = "2";//ГЏГ®Г«Гї: Г«Г®ГЈГЁГ­|ГЇГ Г°Г®Г«Гј|ГЁГ¬Гї
+    std::string JUST_MESSAGE_REQUEST = "3";//ГЏГ®Г«Гї: ГЄГ®Г¬Гі|ГІГҐГЄГ±ГІ
+    std::string SHOW_USERS_LIST_REQUEST = "4";//ГЏГ®Г«Гї: all/online|
+    std::string SHOW_MESSAGE_HISTORY_REQUEST = "5";//ГЏГ®Г«Гї: Г± ГЄГҐГ¬ ГЁГ±ГІГ®Г°ГЁГї|
     std::string SIGNAL_REQUEST = "6";
     std::string LOGOUT_REQUEST = "7";
     std::string RIGHT_CODE = "001";
@@ -51,9 +51,9 @@ private:
 
     std::shared_ptr<User> _currentUser = nullptr;
     bool _activUser = false;
-    bool _chatActivation = false;//Состояние чата
-    bool getChatActivation() const { return _chatActivation; };//Возврат состояния чата 
-    void setChatActivation(bool flag) { _chatActivation = flag; };//Установка состояния чата
+    bool _chatActivation = false;//Г‘Г®Г±ГІГ®ГїГ­ГЁГҐ Г·Г ГІГ 
+    bool getChatActivation() const { return _chatActivation; };//Г‚Г®Г§ГўГ°Г ГІ Г±Г®Г±ГІГ®ГїГ­ГЁГї Г·Г ГІГ  
+    void setChatActivation(bool flag) { _chatActivation = flag; };//Г“Г±ГІГ Г­Г®ГўГЄГ  Г±Г®Г±ГІГ®ГїГ­ГЁГї Г·Г ГІГ 
 
 
     void setCurrentUser(User& currentUser) { *_currentUser = currentUser;  };
@@ -61,13 +61,13 @@ private:
     void sendMessage(Message& _message);
     void sendMessageToAddress();
     std::string receiveMessage();
-    void login();//Вход пользователя
-    void logOut();//Выход из аккаунта 
-    void signUp();//Регистрация пользователя
-    void showChat();//Показать чат
-    void showAllUsersList();//Показать список всех пользователей
-    void showOnlineUsersList();//Показать список всех пользователей
-    void showLoginMenu();//Вход и меню
+    void login();//Г‚ГµГ®Г¤ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї
+    void logOut();//Г‚Г»ГµГ®Г¤ ГЁГ§ Г ГЄГЄГ ГіГ­ГІГ  
+    void signUp();//ГђГҐГЈГЁГ±ГІГ°Г Г¶ГЁГї ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї
+    void showChat();//ГЏГ®ГЄГ Г§Г ГІГј Г·Г ГІ
+    void showAllUsersList();//ГЏГ®ГЄГ Г§Г ГІГј Г±ГЇГЁГ±Г®ГЄ ГўГ±ГҐГµ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ©
+    void showOnlineUsersList();//ГЏГ®ГЄГ Г§Г ГІГј Г±ГЇГЁГ±Г®ГЄ ГўГ±ГҐГµ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ©
+    void showLoginMenu();//Г‚ГµГ®Г¤ ГЁ Г¬ГҐГ­Гѕ
     void showUserMenu();
     void connectToServer(const std::string& ipAddress, int port);
     int clientSocket = -1;
