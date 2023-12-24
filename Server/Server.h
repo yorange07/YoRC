@@ -22,9 +22,9 @@
 class Server {
 public:
 
-    std::string LOGIN_REQUEST = "1";//Поля: логин|пароль
-    std::string REGISTRATION_REQUEST = "2";//Поля: логин|пароль|имя
-    std::string JUST_MESSAGE_REQUEST = "3";//Поля: от кого|кому|текст
+    std::string LOGIN_REQUEST = "1";//ГЏГ®Г«Гї: Г«Г®ГЈГЁГ­|ГЇГ Г°Г®Г«Гј
+    std::string REGISTRATION_REQUEST = "2";//ГЏГ®Г«Гї: Г«Г®ГЈГЁГ­|ГЇГ Г°Г®Г«Гј|ГЁГ¬Гї
+    std::string JUST_MESSAGE_REQUEST = "3";//ГЏГ®Г«Гї: Г®ГІ ГЄГ®ГЈГ®|ГЄГ®Г¬Гі|ГІГҐГЄГ±ГІ
     std::string SHOW_USERS_LIST_REQUEST = "4";
     std::string SHOW_MESSAGE_HISTORY_REQUEST = "5";
     std::string SIGNAL_REQUEST = "6";
@@ -55,13 +55,13 @@ private:
     void showUsers(int clientSocket, const std::string& data);
     void showHistory(int clientSocket, const std::string& data);
 
-    std::vector<User> _userList;//Список пользователей в текущей сессии чата
-    std::vector<Message> _messageBank;//Все сообшения сессии чата
-    std::vector<User>& getAllUsers() { return _userList; };//Возврат списка пользователей
-    std::vector<Message>& getAllMessages() { return _messageBank; };//Возврат всех сообщений сессии
-    int getUserIdBySocket(int clientSocket);//Возврат Id пользователя по логину
-    int getUserSocketById(int id);//Возврат сокета пользователя по логину
-    std::string getUserNameById(int id);//Возврат имени пользователя по id
+    std::vector<User> _userList;//Г‘ГЇГЁГ±Г®ГЄ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ© Гў ГІГҐГЄГіГ№ГҐГ© Г±ГҐГ±Г±ГЁГЁ Г·Г ГІГ 
+    std::vector<Message> _messageBank;//Г‚Г±ГҐ Г±Г®Г®ГЎГёГҐГ­ГЁГї Г±ГҐГ±Г±ГЁГЁ Г·Г ГІГ 
+    std::vector<User>& getAllUsers() { return _userList; };//Г‚Г®Г§ГўГ°Г ГІ Г±ГЇГЁГ±ГЄГ  ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ©
+    std::vector<Message>& getAllMessages() { return _messageBank; };//Г‚Г®Г§ГўГ°Г ГІ ГўГ±ГҐГµ Г±Г®Г®ГЎГ№ГҐГ­ГЁГ© Г±ГҐГ±Г±ГЁГЁ
+    int getUserIdBySocket(int clientSocket);//Г‚Г®Г§ГўГ°Г ГІ Id ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї ГЇГ® Г«Г®ГЈГЁГ­Гі
+    int getUserSocketById(int id);//Г‚Г®Г§ГўГ°Г ГІ Г±Г®ГЄГҐГІГ  ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї ГЇГ® Г«Г®ГЈГЁГ­Гі
+    std::string getUserNameById(int id);//Г‚Г®Г§ГўГ°Г ГІ ГЁГ¬ГҐГ­ГЁ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї ГЇГ® id
 
     int serverSocket = -1;
     std::vector<int> clientSockets;
